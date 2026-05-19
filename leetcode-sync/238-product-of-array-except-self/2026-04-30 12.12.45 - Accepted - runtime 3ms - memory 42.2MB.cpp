@@ -1,0 +1,22 @@
+class Solution {
+public:
+    vector<int> productExceptSelf(vector<int>& nums) {
+        int n = nums.size();
+        vector<int> pf(nums.size(), 0);
+        vector<int> sf(nums.size(), 0);
+        vector<int> result(nums.size(), 0);
+
+        pf[0] = sf[n - 1] = 1;
+
+        for (int i = 1; i < n; i++) {
+            pf[i] = pf[i - 1] * nums[i - 1];
+            sf[n - i - 1] = sf[n - i] * nums[n - i];
+        }
+
+        for (int i = 0; i < n; i++) {
+            result[i] = (pf[i] * sf[i]);
+        }
+
+        return result;
+    }
+};
