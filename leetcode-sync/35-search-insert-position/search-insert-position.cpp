@@ -4,8 +4,8 @@ public:
         int lo = 0, hi = nums.size() - 1;
         int mid = lo + (hi - lo) / 2;
 
-        if (target <= nums[lo]) return lo;
-        if (target > nums[hi]) return hi + 1;
+        // if (target <= nums[lo]) return lo;
+        // if (target > nums[hi]) return hi + 1;
 
         while (lo <= hi) {
             if (nums[mid] == target)
