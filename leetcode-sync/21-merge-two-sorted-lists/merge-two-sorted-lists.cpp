@@ -19,7 +19,7 @@ public:
         if (!list2)
             return list1;
 
-        while (list1 != nullptr && list2 != nullptr) {
+        while (list1 && list2) {
             if (list1->val < list2->val) {
                 curr->next = list1;
                 list1 = list1->next;
