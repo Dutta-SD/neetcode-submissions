@@ -1,50 +1,59 @@
-class Solution {
-    private static String EMPTY_STRING = "";
+import java.util.Map;
 
-    private Map<Character, Integer> getPopulatedMap(final String s) {
-        final Map<Character, Integer> counts = new HashMap<>();
-        for (char c : s.toCharArray()) {
-            counts.merge(c, 1, Integer::sum);
-        }
-        return counts;
-    }
+class Solution {
+    private static final String EMPTY_STRING = "";
 
     public final String minWindow(final String s, final String t) {
-        if (t.length() == 0) {
+        // Edge cases handled immediately using native string properties
+        if (t.isEmpty() || s.length() < t.length()) {
             return EMPTY_STRING;
         }
 
-        int l = 0, have = 0, minLen = Integer.MAX_VALUE, lMin = -1;
+        // 128 covers all standard ASCII characters
+        final int[] countT = new int[128];
+        final int[] window = new int[128];
 
-        final Map<Character, Integer> countT = getPopulatedMap(t);
-        final Map<Character, Integer> window = getPopulatedMap(EMPTY_STRING);
+        // Populate required character frequencies efficiently
+        int need = 0;
+        for (int i = 0; i < t.length(); i++) {
+            char c = t.charAt(i);
+            if (countT[c] == 0) {
+                need++; // Count unique characters needed
+            }
+            countT[c]++;
+        }
 
-        final int need = countT.size();
+        int l = 0;
+        int have = 0;
+        int minLen = Integer.MAX_VALUE;
+        int lMin = -1;
 
+        // Sliding window over string 's'
         for (int r = 0; r < s.length(); r++) {
             final char rChar = s.charAt(r);
+            window[rChar]++;
 
-            window.merge(rChar, 1, Integer::sum);
-
-            if (countT.containsKey(rChar) && countT.get(rChar).equals(window.get(rChar))) {
+            // Safe primitive int comparison (no .equals() or caching bugs)
+            if (countT[rChar] > 0 && window[rChar] == countT[rChar]) {
                 have++;
             }
 
+            // Shrink window from the left as much as possible
             while (have == need) {
-                final char lChar = s.charAt(l);
-
-                // Update window result
-                if (r - l + 1 < minLen) {
-                    minLen = r - l + 1;
+                final int currentWindowLen = r - l + 1;
+                if (currentWindowLen < minLen) {
+                    minLen = currentWindowLen;
                     lMin = l;
                 }
 
-                // Shrink possibilites
-                l++;
-                window.put(lChar, window.get(lChar) - 1);
-                if (countT.containsKey(lChar) && window.get(lChar) < countT.get(lChar)) {
+                final char lChar = s.charAt(l);
+                window[lChar]--;
+
+                // If window loses a required character frequency count, decrement 'have'
+                if (countT[lChar] > 0 && window[lChar] < countT[lChar]) {
                     have--;
                 }
+                l++;
             }
         }
 
