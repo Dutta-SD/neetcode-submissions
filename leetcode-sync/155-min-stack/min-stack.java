@@ -8,11 +8,11 @@ class MinStack {
         stk = new ArrayDeque<>();
     }
 
-    public void push(int value) {
+    public void push(Integer value) {
         if (stk.isEmpty()) {
             stk.push(new Pair<Integer, Integer>(value, value));
         } else {
-            int minValue = Math.min(value, stk.peek().second);
+            Integer minValue = Math.min(value, stk.peek().second);
             stk.push(new Pair<Integer, Integer>(value, minValue));
         }
 
@@ -22,12 +22,12 @@ class MinStack {
         stk.pop();
     }
 
-    public int top() {
+    public Integer top() {
         return stk.peek().first;
 
     }
 
-    public int getMin() {
+    public Integer getMin() {
         return stk.peek().second;
     }
 }
