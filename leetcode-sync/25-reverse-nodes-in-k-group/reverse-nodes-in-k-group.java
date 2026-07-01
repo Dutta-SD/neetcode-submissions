@@ -9,7 +9,7 @@
  * }
  */
 class Solution {
-    public record Pair<S, T>(S first, T second) {
+    private record Pair<S, T>(S first, T second) {
     }
 
     private ListNode getKthNode(ListNode curr, int k) {
