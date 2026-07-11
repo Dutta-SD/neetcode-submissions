@@ -1,36 +1,47 @@
 class Solution {
-    // 0 -> not visited; 1 -> in stack; 2 -> safe, 3 -> unsafe
-    private int[] state;
+    private enum NS {
+        UNVISITED, VISITED, UNSAFE, SAFE
+    }
 
-    private boolean isSafe(int u, int[][] graph) {
-        if (state[u] != 0) {
-            return state[u] == 2;
-        }
+    private NS[] nodeStates;
 
-        state[u] = 1;
+    private boolean isSafe(int[][] graph, int node) {
+        if (nodeStates[node] == NS.VISITED)
+            return false;
+        if (nodeStates[node] == NS.UNSAFE)
+            return false;
+        if (nodeStates[node] == NS.SAFE)
+            return true;
 
-        for (int v : graph[u]) {
-            if (state[v] == 1 || !isSafe(v, graph)) {
-                state[v] = 3;
+        nodeStates[node] = NS.VISITED;
+
+        for (int nb : graph[node]) {
+            if (!isSafe(graph, nb)) {
+                nodeStates[node] = NS.UNSAFE;
                 return false;
             }
         }
 
-        state[u] = 2;
+        nodeStates[node] = NS.SAFE;
         return true;
     }
 
     public List<Integer> eventualSafeNodes(int[][] graph) {
-        final int N = graph.length;
-        state = new int[N];
-
-        for (int i = 0; i < N; i++) {
-            isSafe(i, graph);
+        final List<Integer> safeNodes = new ArrayList<>();
+        nodeStates = new NS[graph.length];
+        for (int node = 0; node < graph.length; node++) {
+            nodeStates[node] = NS.UNVISITED;
         }
 
-        return IntStream.range(0, N)
-                .filter(i -> state[i] == 2)
-                .boxed()
-                .toList();
+        for (int node = 0; node < graph.length; node++) {
+            isSafe(graph, node);
+        }
+
+        for (int node = 0; node < graph.length; node++) {
+            if (nodeStates[node] == NS.SAFE)
+                safeNodes.add(node);
+        }
+
+        return safeNodes;
     }
 }
