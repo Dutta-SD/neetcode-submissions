@@ -31,7 +31,7 @@ class Solution {
             }
             // ry is always the parent
             parent[rx] = ry;
-            rank[ry]++;
+            if (rank[rx] == rank[ry]) rank[rx]++;
             return true;
         }
 
