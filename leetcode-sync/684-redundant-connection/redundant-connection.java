@@ -1,10 +1,4 @@
 class Solution {
-    private static void swap(int a, int b) {
-        a = a ^ b;
-        b = a ^ b;
-        a = a ^ b;
-    }
-
     private class UnionFind {
         private int[] parent, rank;
 
@@ -30,8 +24,11 @@ class Solution {
 
             if (rx == ry)
                 return false;
-            if (rx >= ry)
-                swap(rx, ry);
+            if (rank[rx] >= rank[ry]) {
+                rx = rx ^ ry;
+                ry = rx ^ ry;
+                rx = rx ^ ry;
+            }
             // ry is always the parent
             parent[rx] = ry;
             rank[ry]++;
